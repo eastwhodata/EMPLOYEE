@@ -306,13 +306,44 @@
       gap:18px;
       margin-bottom:24px;
     }
+    
+    /* Global structural style for the left side of topbar */
     .topbar-left {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 12px;
       min-width: 0;
     }
-    .hamburger { display: none; } 
+
+    /* 
+      BULLETPROOF HAMBURGER BUTTON
+      Forces display ON MOBILE, hides ON DESKTOP 
+    */
+    .hamburger {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #FFFFFF;
+      border: 1px solid #E5E7EB;
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      min-height: 44px;
+      border-radius: 12px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      margin-right: 4px;
+      cursor: pointer;
+      z-index: 90;
+      padding: 0;
+    }
+    
+    /* Explicitly hide the hamburger button on Desktop displays */
+    @media(min-width: 993px) {
+      .hamburger {
+        display: none !important;
+      }
+    }
 
     .page-title{ min-width:0; }
     .page-title h1{
@@ -631,22 +662,6 @@
       .login-art{display:none}
       .app-shell{grid-template-columns:1fr}
       
-      /* Guaranteed visible inline hamburger button */
-      .hamburger {
-        display: flex !important;
-        align-items: center;
-        justify-content: center;
-        background: white;
-        border: 1px solid var(--line);
-        color: var(--text);
-        width: 42px;
-        height: 42px;
-        border-radius: 12px;
-        flex-shrink: 0;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-        margin-right: 4px;
-      }
-      
       .sidebar {
         position: fixed;
         left: 0;
@@ -674,7 +689,6 @@
       .nav{display:flex; flex-direction:column;}
       .stat-grid{grid-template-columns:1fr}
       .topbar{flex-direction:row;align-items:center; padding: 4px 0;}
-      .topbar-left { align-items: center; }
       .toolbar{grid-template-columns:1fr}
       .form-grid{grid-template-columns:1fr}
     }
@@ -788,13 +802,14 @@
       <header class="topbar">
         <div class="topbar-left">
           <!-- Highly visible inline SVG Hamburger Menu -->
-          <button id="hamburgerBtn" class="hamburger">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="4" x2="20" y1="12" y2="12"/>
-              <line x1="4" x2="20" y1="6" y2="6"/>
-              <line x1="4" x2="20" y1="18" y2="18"/>
+          <button id="hamburgerBtn" class="hamburger" aria-label="Open Menu">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111827" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" x2="21" y1="12" y2="12"></line>
+              <line x1="3" x2="21" y1="6" y2="6"></line>
+              <line x1="3" x2="21" y1="18" y2="18"></line>
             </svg>
           </button>
+          
           <div class="page-title">
             <h1 id="pageTitle">Dashboard</h1>
             <p id="pageSubtitle">Your people operation command center.</p>
