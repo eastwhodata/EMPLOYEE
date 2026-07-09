@@ -11,7 +11,7 @@ load_dotenv()
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-MOCK_TOKEN = "mock-javagoat-token"
+MOCK_TOKEN = "mock-who-token"
 
 if not SUPABASE_URL or not SUPABASE_KEY:
     raise RuntimeError("SUPABASE_URL and SUPABASE_KEY environment variables are required.")
@@ -142,7 +142,7 @@ def index():
 
 @app.get("/healthz")
 def healthz():
-    return jsonify({"status": "ok", "service": "JavaGoat HR"})
+    return jsonify({"status": "ok", "service": "WHO HR"})
 
 
 @app.post("/api/login")
@@ -151,13 +151,14 @@ def login():
     email = payload.get("email")
     password = payload.get("password")
 
-    if email == "admin@javagoat.hr" and password == "password123":
+    # Updated credentials to match the frontend WHO update
+    if email == "admin@who.hr" and password == "password123":
         return jsonify(
             {
                 "token": MOCK_TOKEN,
                 "user": {
-                    "email": "admin@javagoat.hr",
-                    "name": "JavaGoat Admin",
+                    "email": "admin@who.hr",
+                    "name": "WHO Admin",
                     "role": "HR Operations",
                 },
             }
