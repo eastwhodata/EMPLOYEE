@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no" />
-<title>WHO HR</title>
+<title>JavaGoat HR</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet" />
@@ -24,15 +24,12 @@ button{cursor:pointer;outline:none;border:none;background:none}
 a{text-decoration:none;color:inherit}
 .hidden{display:none!important}
 
-/* ---------- transitions ---------- */
 .login-shell,.app-shell{transition:opacity .45s cubic-bezier(.4,0,.2,1)}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes popIn{from{opacity:0;transform:scale(.94) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
 @keyframes spin{to{transform:rotate(360deg)}}
-@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
 
-/* ---------- login ---------- */
 .login-shell{min-height:100vh;display:grid;grid-template-columns:1.08fr .92fr;background:#fff}
 .login-art{position:relative;overflow:hidden;padding:56px;color:white;
   background:radial-gradient(circle at 18% 20%,rgba(255,255,255,.25),transparent 22%),
@@ -69,25 +66,12 @@ a{text-decoration:none;color:inherit}
 code,.mono{font-family:'JetBrains Mono',monospace}
 .spinner-box{display:inline-block;width:18px;height:18px;border:3px solid rgba(255,255,255,0.3);border-radius:50%;border-top-color:white;animation:spin .8s cubic-bezier(.4,0,.2,1) infinite}
 
-/* ---------- app shell ---------- */
-.app-shell{min-height:100vh;display:grid;grid-template-columns:var(--sidebar-w) 1fr;animation:fadeIn .5s ease}
+.app-shell{min-height:100vh;display:grid;grid-template-columns:1fr;animation:fadeIn .5s ease}
 
-/* Overlay used on ALL screen sizes when sidebar is open */
-.sidebar-overlay{
-  position:fixed;inset:0;background:rgba(17,24,39,.45);backdrop-filter:blur(4px);
-  z-index:99;opacity:0;pointer-events:none;transition:opacity .35s ease;
-}
+.sidebar-overlay{position:fixed;inset:0;background:rgba(17,24,39,.45);backdrop-filter:blur(4px);z-index:99;opacity:0;pointer-events:none;transition:opacity .35s ease}
 .sidebar-overlay.open{opacity:1;pointer-events:auto}
 
-/* Sidebar behaves as an off-canvas drawer everywhere, toggled by hamburger */
-.sidebar{
-  position:fixed;left:0;top:0;height:100vh;width:var(--sidebar-w);z-index:100;
-  padding:24px 18px;background:linear-gradient(160deg,var(--violet),var(--indigo));
-  color:white;display:flex;flex-direction:column;gap:24px;overflow-y:auto;
-  transform:translateX(-102%);
-  transition:transform .38s cubic-bezier(.16,1,.3,1);
-  box-shadow:0 0 0 rgba(0,0,0,0);
-}
+.sidebar{position:fixed;left:0;top:0;height:100vh;width:var(--sidebar-w);z-index:100;padding:24px 18px;background:linear-gradient(160deg,var(--violet),var(--indigo));color:white;display:flex;flex-direction:column;gap:24px;overflow-y:auto;transform:translateX(-102%);transition:transform .38s cubic-bezier(.16,1,.3,1)}
 .sidebar.open{transform:translateX(0);box-shadow:24px 0 60px rgba(17,24,39,.25)}
 .sidebar .brand-row{padding:10px 10px 18px;font-size:23px;justify-content:space-between}
 .sidebar-close{display:flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.12);transition:.2s ease}
@@ -100,34 +84,17 @@ code,.mono{font-family:'JetBrains Mono',monospace}
 .sidebar-footer{margin-top:auto;padding:16px;border-radius:20px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);flex-shrink:0}
 .sidebar-footer small{display:block;color:rgba(255,255,255,.85);line-height:1.5;margin-bottom:12px;font-size:11.5px}
 
-/* --- Beautiful Logout Button --- */
-#logoutBtn{
-  background:linear-gradient(135deg,rgba(239,68,68,.22),rgba(220,38,38,.32));
-  color:#FEE2E2;border:1px solid rgba(255,255,255,.25);
-  box-shadow:0 8px 20px rgba(239,68,68,.18) inset,0 4px 12px rgba(0,0,0,.08);
-  position:relative;overflow:hidden;transition:.3s ease;
-}
-#logoutBtn::after{
-  content:'';position:absolute;inset:0;background:linear-gradient(135deg,#FB7185,#EF4444);
-  opacity:0;transition:.3s ease;z-index:-1;
-}
+#logoutBtn{background:linear-gradient(135deg,rgba(239,68,68,.22),rgba(220,38,38,.32));color:#FEE2E2;border:1px solid rgba(255,255,255,.25);box-shadow:0 8px 20px rgba(239,68,68,.18) inset,0 4px 12px rgba(0,0,0,.08);position:relative;overflow:hidden;transition:.3s ease}
+#logoutBtn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,#FB7185,#EF4444);opacity:0;transition:.3s ease;z-index:-1}
 #logoutBtn:hover{color:white;transform:translateY(-2px);box-shadow:0 14px 28px rgba(239,68,68,.35)}
 #logoutBtn:hover::after{opacity:1}
-#logoutBtn i{position:relative;z-index:1}
-#logoutBtn span{position:relative;z-index:1}
+#logoutBtn i,#logoutBtn span{position:relative;z-index:1}
 
-/* ---------- main / topbar ---------- */
 .main{min-width:0;padding:26px;transition:.3s ease}
 .topbar{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:24px;flex-wrap:wrap}
 .topbar-left{display:flex;align-items:center;gap:16px;min-width:0}
 
-/* Hamburger — visible on ALL screen sizes (desktop + mobile) */
-.hamburger{
-  display:flex;align-items:center;justify-content:center;background:white;
-  border:1px solid var(--line);color:var(--text);width:44px;height:44px;
-  border-radius:13px;flex-shrink:0;box-shadow:0 4px 14px rgba(17,24,39,.08);
-  transition:.25s ease;position:relative;
-}
+.hamburger{display:flex;align-items:center;justify-content:center;background:white;border:1px solid var(--line);color:var(--text);width:44px;height:44px;border-radius:13px;flex-shrink:0;box-shadow:0 4px 14px rgba(17,24,39,.08);transition:.25s ease;position:relative}
 .hamburger:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(124,58,237,.18);border-color:rgba(124,58,237,.3)}
 .hamburger svg{transition:transform .3s ease}
 .hamburger.active svg{transform:rotate(90deg)}
@@ -206,16 +173,10 @@ tr:hover td{background:#FCFCFF}
   .dashboard-row-2,.dashboard-row-3{grid-template-columns:1fr}
   .toolbar{grid-template-columns:1fr 1fr}
 }
-
-/* ---------- Off-canvas menu now applies at EVERY width ---------- */
-.app-shell{grid-template-columns:1fr}
-.main{padding:26px}
-
 @media (max-width:992px){
   .login-shell{grid-template-columns:1fr}
   .login-art{display:none}
 }
-
 @media (max-width:480px){
   .main{padding:18px 14px}
   .page-title h1{font-size:24px}
@@ -239,14 +200,14 @@ tr:hover td{background:#FCFCFF}
 
 <section id="loginPage" class="login-shell">
   <div class="login-art">
-    <div class="brand-row"><div class="brand-logo"><i data-lucide="coffee"></i></div><span>WHO HR</span></div>
+    <div class="brand-row"><div class="brand-logo"><i data-lucide="coffee"></i></div><span>JavaGoat HR</span></div>
     <div>
       <h1>People operations brewed smarter.</h1>
       <p>A modern HRMS dashboard for employees, attendance, leaves, payroll, and role planning with vibrant analytics and quick workflows.</p>
     </div>
     <div class="glass-card">
       <div class="glass-grid">
-        <div class="glass-stat"><b>360°</b><span>Employee view</span></div>
+        <div class="glass-stat"><b>360</b><span>Employee view</span></div>
         <div class="glass-stat"><b>Live</b><span>HR analytics</span></div>
         <div class="glass-stat"><b>Fast</b><span>Payroll runs</span></div>
         <div class="glass-stat"><b>Clean</b><span>Team data</span></div>
@@ -257,14 +218,14 @@ tr:hover td{background:#FCFCFF}
     <form id="loginForm" class="login-form-card">
       <div class="brand-row" style="color:#111827;margin-bottom:28px">
         <div class="brand-logo" style="background:linear-gradient(135deg,var(--violet),var(--indigo));color:white"><i data-lucide="coffee"></i></div>
-        <span>WHO HR</span>
+        <span>JavaGoat HR</span>
       </div>
       <h2>Welcome back</h2>
       <p>Sign in with the mock admin account to manage your HR workspace.</p>
-      <div class="field"><label>Email</label><input id="loginEmail" class="input" type="email" value="admin@who.hr" autocomplete="email" required /></div>
+      <div class="field"><label>Email</label><input id="loginEmail" class="input" type="email" value="admin@javagoat.hr" autocomplete="email" required /></div>
       <div class="field"><label>Password</label><input id="loginPassword" class="input" type="password" value="password123" autocomplete="current-password" required /></div>
       <button class="btn btn-primary btn-full" type="submit" id="loginBtnSubmit"><i data-lucide="log-in"></i> Sign In</button>
-      <div class="login-hint"><b>Demo Credentials</b><br>Email: <code>admin@who.hr</code><br>Password: <code>password123</code></div>
+      <div class="login-hint"><b>Demo Credentials</b><br>Email: <code>admin@javagoat.hr</code><br>Password: <code>password123</code></div>
     </form>
   </div>
 </section>
@@ -274,12 +235,12 @@ tr:hover td{background:#FCFCFF}
 
   <aside class="sidebar">
     <div class="brand-row">
-      <div style="display:flex;gap:14px;align-items:center"><div class="brand-logo"><i data-lucide="coffee"></i></div><span>WHO HR</span></div>
+      <div style="display:flex;gap:14px;align-items:center"><div class="brand-logo"><i data-lucide="coffee"></i></div><span>JavaGoat HR</span></div>
       <button class="sidebar-close" id="sidebarCloseBtn"><i data-lucide="x" style="width:18px;height:18px"></i></button>
     </div>
     <nav class="nav" id="nav"></nav>
     <div class="sidebar-footer">
-      <small>Signed in as <b style="word-break:break-all">admin@who.hr</b>. Local authentication is active.</small>
+      <small>Signed in as <b id="userEmailLabel" style="word-break:break-all">admin@javagoat.hr</b>. Local authentication is active.</small>
       <button id="logoutBtn" class="btn btn-full"><i data-lucide="power"></i><span>Logout</span></button>
     </div>
   </aside>
@@ -301,7 +262,7 @@ tr:hover td{background:#FCFCFF}
       </div>
       <div class="user-chip">
         <img class="avatar" alt="Admin avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'%3E%3C/path%3E%3Ccircle cx='12' cy='7' r='4'%3E%3C/circle%3E%3C/svg%3E" />
-        <div><b>WHO Admin</b><br><small class="muted">HR Operations</small></div>
+        <div><b>JavaGoat Admin</b><br><small class="muted">HR Operations</small></div>
       </div>
     </header>
     <section id="view"></section>
@@ -313,14 +274,13 @@ tr:hover td{background:#FCFCFF}
 
 <script>
 const API='/api';
-const TOKENKEY='whohrtoken';
+const TOKENKEY='javagoathrtoken';
 const DEFAULTSTATUS=['active','inactive','onboarding','terminated','present','absent','late','approved','pending','rejected','paid','draft'];
 const POSITIONPILLS=['pill-violet','pill-green','pill-orange','pill-blue','pill-pink','pill-cyan'];
 const routes=[['dashboard','Dashboard','layout-dashboard'],['employees','Employees','users'],['departments','Departments','building-2'],
 ['positions','Positions','briefcase-business'],['attendance','Attendance','calendar-check'],['leaves','Leaves','plane'],['payroll','Payroll','wallet-cards']];
 const state={route:'dashboard',departments:[],positions:[],employees:[],attendance:[],leaves:[],payroll:[],charts:{}};
 
-// FIXED: Restored all snake_case mappings to match Database & Backend exactly.
 const meta={
  departments:{title:'Departments',singular:'Department',icon:'building-2',dateField:'created_at',
   fields:[{name:'name',label:'Department Name',type:'text',required:true},{name:'description',label:'Description',type:'textarea'},
@@ -374,7 +334,7 @@ function money(n){return 'Rs '+Number(n||0).toLocaleString('en-IN',{maximumFract
 function formatDateDisplay(dStr){if(!dStr)return '';const parts=String(dStr).split('T')[0].split('-');if(parts.length===3)return `${parts[2]}/${parts[1]}/${parts[0]}`;return escapeHtml(dStr)}
 function human(v){return String(v??'Unassigned').replaceAll('_',' ').replace(/^./,c=>c.toUpperCase())}
 function avatarFor(name){return "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'%3E%3C/path%3E%3Ccircle cx='12' cy='7' r='4'%3E%3C/circle%3E%3C/svg%3E"}
-function employeeName(emp){return emp?`${emp.first_name} ${emp.last_name}`.trim()||'Unnamed Employee':'Unknown Employee'}
+function employeeName(emp){return emp?`${emp.first_name||''} ${emp.last_name||''}`.trim()||'Unnamed Employee':'Unknown Employee'}
 function byId(list,id){return list.find(x=>String(x.id)===String(id))}
 function departmentName(id){return byId(state.departments,id)?.name||'Unassigned'}
 function positionTitle(id){return byId(state.positions,id)?.title||'Unassigned'}
@@ -389,7 +349,6 @@ function pillForStatus(status){
 function statusPill(status){return `<span class="pill ${pillForStatus(status)}">${human(status)}</span>`}
 function positionPill(title,i=0){return `<span class="pill ${POSITIONPILLS[i%POSITIONPILLS.length]}">${escapeHtml(title)||'Unassigned'}</span>`}
 
-/* ---------- shell / nav / hamburger ---------- */
 function renderShell(){
   const nav=document.getElementById('nav');
   nav.innerHTML=routes.map(([key,label,icon])=>
@@ -413,15 +372,12 @@ function closeSidebar(){
   document.getElementById('hamburgerBtn').classList.remove('active');
   document.body.style.overflow='';
 }
-function toggleSidebar(){
-  document.querySelector('.sidebar').classList.contains('open')?closeSidebar():openSidebar();
-}
+function toggleSidebar(){document.querySelector('.sidebar').classList.contains('open')?closeSidebar():openSidebar()}
 document.getElementById('hamburgerBtn').onclick=toggleSidebar;
 document.getElementById('sidebarCloseBtn').onclick=closeSidebar;
 document.getElementById('sidebarOverlay').onclick=closeSidebar;
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSidebar()});
 
-/* ---------- Beautiful Logout transition ---------- */
 document.getElementById('logoutBtn').onclick=()=>{
   localStorage.removeItem(TOKENKEY);
   closeSidebar();
@@ -485,14 +441,13 @@ async function renderDashboard(){
     <div class="panel card"><div class="panel-head"><div><h3>Status Breakdown</h3><small>Employee status composition</small></div><i data-lucide="badge-check"></i></div><div class="chart-box"><canvas id="statusChart"></canvas></div></div>
   </div>`;
   destroyCharts();
-  const varied=['#7C3AED','#10B981','#F97316','#EC4899','#06B6D4','#F59E0B','#2563EB','#EF4444'];
   const hiringTrend=stats.hiring_trend||{labels:[],data:[]};
-  const hiringMax=Math.max(1,...hiringTrend.data||[0]);
+  const hiringMax=Math.max(1,...(hiringTrend.data||[0]));
   state.charts.hiring=new Chart(document.getElementById('hiringChart'),{type:'bar',
     data:{labels:hiringTrend.labels,datasets:[{label:'Hires',data:hiringTrend.data,backgroundColor:['#7C3AED','#4F46E5','#2563EB','#06B6D4','#10B981','#F97316'],borderRadius:12,borderSkipped:false}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>'Hires: '+ctx.raw}}},scales:{y:{beginAtZero:true,suggestedMax:hiringMax+1,ticks:{precision:0}},x:{grid:{display:false}}}}});
   state.charts.department=new Chart(document.getElementById('departmentChart'),{type:'doughnut',
-    data:{labels:stats.department_mix.labels,datasets:[{data:stats.department_mix.data,backgroundColor:varied,borderWidth:4,borderColor:'#fff'}]},
+    data:{labels:stats.department_mix.labels,datasets:[{data:stats.department_mix.data,backgroundColor:['#7C3AED','#10B981','#F97316','#EC4899','#06B6D4','#F59E0B','#2563EB','#EF4444'],borderWidth:4,borderColor:'#fff'}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom'}}}});
   state.charts.attendance=new Chart(document.getElementById('attendanceChart'),{type:'line',
     data:{labels:stats.attendance_trend.labels,datasets:[{label:'Present',data:stats.attendance_trend.data,borderColor:'#4F46E5',backgroundColor:'rgba(79,70,229,.12)',tension:.42,fill:true,pointRadius:4}]},
@@ -606,7 +561,7 @@ function formControl(field,item){
   const required=field.required?'required':'';
   const cls=field.full?'field full':'field';
   if(field.type==='textarea')return `<div class="${cls}"><label>${field.label}</label><textarea class="textarea" name="${field.name}" ${required}>${escapeHtml(value)}</textarea></div>`;
-  if(field.type==='select')return `<div class="${cls}"><label>${field.label}</label><select class="select" name="${field.name}" ${required}>${field.options.map(opt=>`<option value="${opt}" ${String(value)===opt||field.options[0]===opt&&!value?'selected':''}>${human(opt)}</option>`).join('')}</select></div>`;
+  if(field.type==='select')return `<div class="${cls}"><label>${field.label}</label><select class="select" name="${field.name}" ${required}>${field.options.map(opt=>`<option value="${opt}" ${String(value)===opt||(field.options[0]===opt&&!value)?'selected':''}>${human(opt)}</option>`).join('')}</select></div>`;
   if(['department','position','employee'].includes(field.type))return `<div class="${cls}"><label>${field.label}</label><select class="select" name="${field.name}" ${required}>${optionList(field.type,value)}</select></div>`;
   if(field.type==='file'){
     const currentPic=item?.profile_pic||avatarFor(item?employeeName(item):'New Employee');
