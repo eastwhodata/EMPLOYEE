@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>JavaGoat HR</title>
+  <title>WHO HR</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -43,6 +43,11 @@
     a{text-decoration:none;color:inherit}
 
     .hidden{display:none!important}
+
+    /* Page shell transition styling */
+    .login-shell, .app-shell {
+      transition: opacity 0.4s ease;
+    }
 
     .login-shell{
       min-height:100vh;
@@ -206,6 +211,18 @@
     }
     code,.mono{font-family:"JetBrains Mono",monospace}
 
+    /* Small rounded beautiful loader */
+    .spinner-box {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
     .app-shell{
       min-height:100vh;
       display:grid;
@@ -221,7 +238,10 @@
       display:flex;
       flex-direction:column;
       gap:24px;
+      z-index: 100;
     }
+    .sidebar-overlay{ display:none; }
+    
     .sidebar .brand-row{
       padding:10px 10px 18px;
       font-size:23px;
@@ -258,6 +278,20 @@
       margin-bottom:12px;
     }
 
+    /* Beautiful Logout Button */
+    #logoutBtn {
+      background: rgba(239, 68, 68, 0.15);
+      color: #FECACA;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      transition: 0.3s ease;
+    }
+    #logoutBtn:hover {
+      background: #EF4444;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(239,68,68,0.3);
+    }
+
     .main{
       min-width:0;
       padding:26px;
@@ -269,6 +303,13 @@
       gap:18px;
       margin-bottom:24px;
     }
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .hamburger { display: none; } /* Only on mobile */
+
     .page-title h1{
       font-family:Sora,sans-serif;
       font-size:34px;
@@ -565,17 +606,52 @@
       .dashboard-row-2,.dashboard-row-3{grid-template-columns:1fr}
       .toolbar{grid-template-columns:1fr 1fr}
     }
+
+    /* Mobile off-canvas menu layout */
     @media(max-width:860px){
       .login-shell{grid-template-columns:1fr}
       .login-art{display:none}
       .app-shell{grid-template-columns:1fr}
-      .sidebar{
-        position:relative;
-        height:auto;
+      
+      .hamburger {
+        display: inline-flex;
+        background: transparent;
+        border: 0;
+        color: var(--text);
+        padding: 8px;
+        margin-left: -8px; /* Alignment tweak */
       }
-      .nav{display:grid;grid-template-columns:repeat(2,1fr)}
+      
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        width: 280px;
+        transform: translateX(-100%);
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      
+      .sidebar.open { transform: translateX(0); }
+      
+      .sidebar-overlay {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(17,24,39,0.4);
+        backdrop-filter: blur(4px);
+        z-index: 99;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.4s ease;
+      }
+      
+      .sidebar-overlay.open { opacity: 1; pointer-events: auto; }
+
+      .nav{display:flex; flex-direction:column;}
       .stat-grid{grid-template-columns:1fr}
       .topbar{flex-direction:column;align-items:stretch}
+      .topbar-left { align-items: flex-start; }
       .toolbar{grid-template-columns:1fr}
       .form-grid{grid-template-columns:1fr}
     }
@@ -587,7 +663,7 @@
     <div class="login-art">
       <div class="brand-row">
         <div class="brand-logo"><i data-lucide="coffee"></i></div>
-        <span>JavaGoat HR</span>
+        <span>WHO HR</span>
       </div>
 
       <div>
@@ -614,28 +690,28 @@
           <div class="brand-logo" style="background:linear-gradient(135deg,var(--violet),var(--indigo));color:white">
             <i data-lucide="coffee"></i>
           </div>
-          <span>JavaGoat HR</span>
+          <span>WHO HR</span>
         </div>
         <h2>Welcome back</h2>
         <p>Sign in with the mock admin account to manage your HR workspace.</p>
 
         <div class="field">
           <label>Email</label>
-          <input id="loginEmail" class="input" type="email" value="admin@javagoat.hr" autocomplete="email" required>
+          <input id="loginEmail" class="input" type="email" value="admin@who.hr" autocomplete="email" required>
         </div>
         <div class="field">
           <label>Password</label>
           <input id="loginPassword" class="input" type="password" value="password123" autocomplete="current-password" required>
         </div>
 
-        <button class="btn btn-primary btn-full" type="submit">
+        <button class="btn btn-primary btn-full" type="submit" id="loginBtnSubmit">
           <i data-lucide="log-in"></i>
           Sign In
         </button>
 
         <div class="login-hint">
           <b>Demo Credentials</b><br>
-          Email: <code>admin@javagoat.hr</code><br>
+          Email: <code>admin@who.hr</code><br>
           Password: <code>password123</code>
         </div>
       </form>
@@ -643,18 +719,21 @@
   </section>
 
   <section id="appPage" class="app-shell hidden">
+    <!-- Sidebar Overlay for Mobile -->
+    <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
     <aside class="sidebar">
       <div class="brand-row">
         <div class="brand-logo"><i data-lucide="coffee"></i></div>
-        <span>JavaGoat HR</span>
+        <span>WHO HR</span>
       </div>
 
       <nav class="nav" id="nav"></nav>
 
       <div class="sidebar-footer">
-        <small>Signed in as <b>admin@javagoat.hr</b>. Local mock token authentication is active.</small>
-        <button id="logoutBtn" class="btn btn-ghost btn-full">
-          <i data-lucide="log-out"></i>
+        <small>Signed in as <b style="word-break: break-all;">admin@who.hr</b>. Local authentication is active.</small>
+        <button id="logoutBtn" class="btn btn-full">
+          <i data-lucide="power"></i>
           Logout
         </button>
       </div>
@@ -662,14 +741,18 @@
 
     <main class="main">
       <header class="topbar">
-        <div class="page-title">
-          <h1 id="pageTitle">Dashboard</h1>
-          <p id="pageSubtitle">Your people operation command center.</p>
+        <div class="topbar-left">
+          <button id="hamburgerBtn" class="hamburger"><i data-lucide="menu"></i></button>
+          <div class="page-title">
+            <h1 id="pageTitle">Dashboard</h1>
+            <p id="pageSubtitle">Your people operation command center.</p>
+          </div>
         </div>
+        
         <div class="user-chip">
           <img class="avatar" alt="Admin avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E">
           <div>
-            <b>JavaGoat Admin</b><br>
+            <b>WHO Admin</b><br>
             <small class="muted">HR Operations</small>
           </div>
         </div>
@@ -684,7 +767,7 @@
 
 <script>
 const API = "/api";
-const TOKEN_KEY = "javagoat_hr_token";
+const TOKEN_KEY = "who_hr_token";
 const DEFAULT_STATUS = ["active","inactive","onboarding","terminated","present","absent","late","approved","pending","rejected","paid","draft"];
 const POSITION_PILLS = ["pill-violet","pill-green","pill-orange","pill-blue","pill-pink","pill-cyan"];
 
@@ -822,8 +905,19 @@ function escapeHtml(value){
   return String(value ?? "").replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
 }
 
+// Custom money format prefixed with Rs
 function money(n){
-  return new Intl.NumberFormat("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0}).format(Number(n || 0));
+  return "Rs " + Number(n || 0).toLocaleString("en-IN", { maximumFractionDigits: 0 });
+}
+
+// Custom date formatter: Returns dd/mm/yyyy
+function formatDateDisplay(dStr) {
+  if (!dStr) return "";
+  const parts = String(dStr).split("T")[0].split("-"); // [YYYY, MM, DD]
+  if (parts.length === 3) {
+    return `${parts[2]}/${parts[1]}/${parts[0]}`;
+  }
+  return escapeHtml(dStr);
 }
 
 function human(v){
@@ -877,16 +971,50 @@ function renderShell(){
   `).join("");
 
   nav.querySelectorAll("[data-route]").forEach(btn => {
-    btn.addEventListener("click", () => navigate(btn.dataset.route));
+    btn.addEventListener("click", () => {
+      navigate(btn.dataset.route);
+      closeSidebar(); // auto close mobile sidebar on nav select
+    });
   });
-
-  document.getElementById("logoutBtn").onclick = () => {
-    localStorage.removeItem(TOKEN_KEY);
-    location.reload();
-  };
 
   lucide.createIcons();
 }
+
+// Side menu logic
+document.getElementById("hamburgerBtn").onclick = () => {
+  document.querySelector(".sidebar").classList.add("open");
+  document.getElementById("sidebarOverlay").classList.add("open");
+};
+function closeSidebar() {
+  document.querySelector(".sidebar").classList.remove("open");
+  document.getElementById("sidebarOverlay").classList.remove("open");
+}
+document.getElementById("sidebarOverlay").onclick = closeSidebar;
+
+// Beautiful Logout transition
+document.getElementById("logoutBtn").onclick = () => {
+  localStorage.removeItem(TOKEN_KEY);
+  
+  const appEl = document.getElementById("appPage");
+  const loginEl = document.getElementById("loginPage");
+  
+  // Fade out App
+  appEl.style.opacity = 0;
+  
+  setTimeout(() => {
+    appEl.classList.add("hidden");
+    appEl.style.opacity = 1; // cleanup
+    
+    // Fade in Login
+    loginEl.classList.remove("hidden");
+    loginEl.style.opacity = 0;
+    
+    // trigger reflow so transition occurs
+    void loginEl.offsetWidth;
+    loginEl.style.opacity = 1;
+    
+  }, 400); // 0.4s matches CSS transition
+};
 
 async function loadAll(){
   const [departments, positions, employees, attendance, leaves, payroll] = await Promise.all([
@@ -991,53 +1119,53 @@ async function renderDashboard(){
   destroyCharts();
   const varied = ["#7C3AED","#10B981","#F97316","#EC4899","#06B6D4","#F59E0B","#2563EB","#EF4444"];
 
- const hiringTrend = stats.hiring_trend || { labels: [], data: [] };
-const hiringMax = Math.max(1, ...(hiringTrend.data || [0]));
+  const hiringTrend = stats.hiring_trend || { labels: [], data: [] };
+  const hiringMax = Math.max(1, ...(hiringTrend.data || [0]));
 
-state.charts.hiring = new Chart(document.getElementById("hiringChart"), {
-  type: "bar",
-  data: {
-    labels: hiringTrend.labels,
-    datasets: [
-      {
-        label: "Hires",
-        data: hiringTrend.data,
-        backgroundColor: [
-          "#7C3AED",
-          "#4F46E5",
-          "#2563EB",
-          "#06B6D4",
-          "#10B981",
-          "#F97316"
-        ],
-        borderRadius: 12,
-        borderSkipped: false
-      }
-    ]
-  },
-  options: {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      tooltip: {
-        callbacks: {
-          label: ctx => `Hires: ${ctx.raw}`
+  state.charts.hiring = new Chart(document.getElementById("hiringChart"), {
+    type: "bar",
+    data: {
+      labels: hiringTrend.labels,
+      datasets: [
+        {
+          label: "Hires",
+          data: hiringTrend.data,
+          backgroundColor: [
+            "#7C3AED",
+            "#4F46E5",
+            "#2563EB",
+            "#06B6D4",
+            "#10B981",
+            "#F97316"
+          ],
+          borderRadius: 12,
+          borderSkipped: false
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => `Hires: ${ctx.raw}`
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          suggestedMax: hiringMax + 1,
+          ticks: { precision: 0 }
+        },
+        x: {
+          grid: { display: false }
         }
       }
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        suggestedMax: hiringMax + 1,
-        ticks: { precision: 0 }
-      },
-      x: {
-        grid: { display: false }
-      }
     }
-  }
-});
+  });
 
   state.charts.department = new Chart(document.getElementById("departmentChart"), {
     type:"doughnut",
@@ -1253,7 +1381,7 @@ function tableRow(entity,row){
     const e = byId(state.employees, row.employee_id);
     return `<tr>
       <td><b>${escapeHtml(employeeName(e))}</b></td>
-      <td>${escapeHtml(row.date || "")}</td>
+      <td>${formatDateDisplay(row.date)}</td>
       <td>${escapeHtml(row.check_in || "")}</td>
       <td>${escapeHtml(row.check_out || "")}</td>
       <td>${statusPill(row.status)}</td>
@@ -1266,7 +1394,7 @@ function tableRow(entity,row){
     return `<tr>
       <td><b>${escapeHtml(employeeName(e))}</b></td>
       <td>${escapeHtml(human(row.type))}</td>
-      <td>${escapeHtml(row.start_date || "")} → ${escapeHtml(row.end_date || "")}</td>
+      <td>${formatDateDisplay(row.start_date)} → ${formatDateDisplay(row.end_date)}</td>
       <td>${statusPill(row.status)}</td>
       <td>${escapeHtml(row.reason || "")}</td>
       <td>${actions}</td>
@@ -1345,7 +1473,10 @@ function openForm(entity, item=null){
     body: `<form id="entityForm" class="form-grid">${m.fields.map(f => formControl(f,item)).join("")}</form>`,
     footer: `
       <button class="btn btn-ghost" data-close>Cancel</button>
-      <button class="btn btn-primary" id="saveBtn"><i data-lucide="save"></i>${isEdit ? "Save Changes" : "Create Record"}</button>
+      <button class="btn btn-primary" id="saveBtn">
+        <i data-lucide="save"></i> 
+        <span>${isEdit ? "Save Changes" : "Create Record"}</span>
+      </button>
     `
   });
 
@@ -1363,9 +1494,15 @@ function openForm(entity, item=null){
     wirePayrollAutoFill();
   }
 
-  document.getElementById("saveBtn").onclick = async () => {
+  document.getElementById("saveBtn").onclick = async (e) => {
     const form = document.getElementById("entityForm");
     if(!form.reportValidity()) return;
+
+    // Load Animation State
+    const btn = e.currentTarget;
+    const origHTML = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner-box"></span> <span>Saving...</span>';
+    btn.style.pointerEvents = "none";
 
     const payload = {};
     const data = new FormData(form);
@@ -1405,6 +1542,8 @@ function openForm(entity, item=null){
       toast(`${m.singular} ${isEdit ? "updated" : "created"} successfully`);
     }catch(err){
       toast(err.message, true);
+      btn.innerHTML = origHTML;
+      btn.style.pointerEvents = "auto";
     }
   };
 
@@ -1480,12 +1619,17 @@ function openAssignModal(positionId){
     `
   });
 
-  document.getElementById("assignBtn").onclick = async () => {
+  document.getElementById("assignBtn").onclick = async (e) => {
     const employeeId = document.getElementById("assignEmployeeSelect").value;
     if(!employeeId){
       toast("Select an employee to assign", true);
       return;
     }
+
+    const btn = e.currentTarget;
+    const origHTML = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner-box"></span> Assigning...';
+    btn.style.pointerEvents = "none";
 
     try{
       await request(`/employees/${employeeId}`, {method:"PUT", body:JSON.stringify({position_id: positionId})});
@@ -1495,6 +1639,8 @@ function openAssignModal(positionId){
       toast("Employee assigned successfully");
     }catch(err){
       toast(err.message,true);
+      btn.innerHTML = origHTML;
+      btn.style.pointerEvents = "auto";
     }
   };
 
@@ -1513,7 +1659,12 @@ function confirmDelete(entity,id){
     `
   });
 
-  document.getElementById("deleteBtn").onclick = async () => {
+  document.getElementById("deleteBtn").onclick = async (e) => {
+    const btn = e.currentTarget;
+    const origHTML = btn.innerHTML;
+    btn.innerHTML = '<span class="spinner-box"></span> Deleting...';
+    btn.style.pointerEvents = "none";
+
     try{
       await request(`/${entity}/${id}`, {method:"DELETE"});
       closeModal();
@@ -1522,6 +1673,8 @@ function confirmDelete(entity,id){
       toast(`${m.singular} deleted`);
     }catch(err){
       toast(err.message,true);
+      btn.innerHTML = origHTML;
+      btn.style.pointerEvents = "auto";
     }
   };
 
@@ -1553,8 +1706,15 @@ function closeModal(){
   document.getElementById("modalRoot").innerHTML = "";
 }
 
+// Login with sleek animation
 document.getElementById("loginForm").addEventListener("submit", async e => {
   e.preventDefault();
+  
+  const btn = document.getElementById("loginBtnSubmit");
+  const origHTML = btn.innerHTML;
+  btn.innerHTML = '<span class="spinner-box"></span> Verifying...';
+  btn.style.pointerEvents = "none";
+
   try{
     const data = await request("/login", {
       method:"POST",
@@ -1564,13 +1724,27 @@ document.getElementById("loginForm").addEventListener("submit", async e => {
       })
     });
     localStorage.setItem(TOKEN_KEY, data.token);
-    await boot();
+    
+    // Smooth transition from Login to App
+    const loginEl = document.getElementById("loginPage");
+    loginEl.style.opacity = 0;
+    
+    setTimeout(async () => {
+      // Revert button styling for next login
+      btn.innerHTML = origHTML;
+      btn.style.pointerEvents = "auto";
+      
+      await boot(true); 
+    }, 400);
+
   }catch(err){
     toast(err.message,true);
+    btn.innerHTML = origHTML;
+    btn.style.pointerEvents = "auto";
   }
 });
 
-async function boot(){
+async function boot(animatedTransition = false){
   if(!token()){
     document.getElementById("loginPage").classList.remove("hidden");
     document.getElementById("appPage").classList.add("hidden");
@@ -1578,8 +1752,16 @@ async function boot(){
     return;
   }
 
+  // Pre-load layout
   document.getElementById("loginPage").classList.add("hidden");
-  document.getElementById("appPage").classList.remove("hidden");
+  const appEl = document.getElementById("appPage");
+  appEl.classList.remove("hidden");
+  
+  if (animatedTransition) {
+    appEl.style.opacity = 0;
+    void appEl.offsetWidth; // Reflow to reset transition
+    appEl.style.opacity = 1;
+  }
 
   try{
     renderShell();
@@ -1590,6 +1772,9 @@ async function boot(){
     toast("Session expired. Please sign in again.", true);
     document.getElementById("loginPage").classList.remove("hidden");
     document.getElementById("appPage").classList.add("hidden");
+    
+    // Reset login screen opacity if session expires
+    document.getElementById("loginPage").style.opacity = 1;
   }
 }
 
